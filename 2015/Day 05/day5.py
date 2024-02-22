@@ -22,5 +22,39 @@ How many strings are nice?
 
 import re
 
-# GOLIATH:
-# .*(?=.*(.)\1{1,}.*)(?=.*[aeiou].*[aeiou].*[aeiou].*)(?=^(?:(?!(ab)|(cd)|(pq)|(xy)).)*$).*
+part1_rules = r".*(?=.*(.)\1{1,}.*)(?=.*[aeiou].*[aeiou].*[aeiou].*)(?=^(?:(?!(ab)|(cd)|(pq)|(xy)).)*$).*"
+
+def get_strings(file):
+    return open(file).read().splitlines()
+
+def count_nice_strings(strings, rules):
+    return sum([re.match(rules, string) != None for string in strings])
+
+print("There are", count_nice_strings(get_strings("input.txt"), part1_rules), "nice strings.")
+
+"""
+--- Part Two ---
+Realizing the error of his ways, Santa has switched to a better model of determining whether a string is naughty or nice. 
+None of the old rules apply, as they are all clearly ridiculous.
+
+Now, a nice string is one with all of the following properties:
+
+It contains a pair of any two letters that appears at least twice in the string without overlapping, 
+like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
+It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi (efe), or even aaa.
+For example:
+
+qjhvhtzxzqqjkmpb is nice because is has a pair that appears twice (qj) and a letter that repeats with exactly one letter between them (zxz).
+xxyxx is nice because it has a pair that appears twice and a letter that repeats with one between, even though the letters used by each rule overlap.
+uurcxstgmygtbstg is naughty because it has a pair (tg) but no repeat with a single letter between them.
+ieodomkazucvgmuy is naughty because it has a repeating letter with one between (odo), but no pair that appears twice.
+
+How many strings are nice under these new rules?
+"""
+
+part2_rules = r".*(?=.*(..).*\1.*)(?=.*(.).\2).*"
+
+print("There are", count_nice_strings(get_strings("input.txt"), part2_rules), "nice strings under the new rules.")
+
+
+# I went for regular expressions with this one as I believe it was a nice opportunity to learn more about them. 
