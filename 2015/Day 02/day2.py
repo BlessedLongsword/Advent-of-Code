@@ -49,3 +49,13 @@ A present with dimensions 1x1x10 requires 1+1+1+1 = 4 feet of ribbon to wrap the
 
 How many total feet of ribbon should they order?
 """
+
+def compute_ribbon_length(l, w, h):
+    volume = l * w * h
+    side_pair_sums = [l + w, w + h, h + l]
+    return 2 * min(side_pair_sums) + volume
+
+def compute_total_ribbon_length(dimensions_list):
+    return sum([compute_ribbon_length(*dimensions) for dimensions in dimensions_list])
+
+print(f"They should order {compute_total_ribbon_length(get_box_list("input.txt"))} feet of ribbon")
