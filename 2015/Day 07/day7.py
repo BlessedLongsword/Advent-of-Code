@@ -47,3 +47,18 @@ In little Bobby's kit's instructions booklet (provided as your puzzle input), wh
 
 """
 
+def get_circuit(file):
+    return open(file).read().splitlines()
+
+def run_circuit(circuit):
+    signals = {}
+    operations = []
+    for instruction in circuit:
+        operation, target = instruction.split(' -> ')
+        operation = operation.split(' ')
+        if len(operation == 1):
+            signals[target] = int(operation[0])
+        elif len(operation == 2):
+            pass
+        
+run_circuit(get_circuit("input.txt"))
