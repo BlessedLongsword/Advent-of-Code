@@ -62,23 +62,30 @@ class Operation:
     
     def operable(self, signals):
         if not self.second_operand or self.second_operand.isnumeric():
+            if self.operand.isnumeric():
+                return True
             return signals[self.operand] != None
+        if self.operand.isnumeric():
+            return signals[self.second_operand] != None
         return  signals[self.operand] != None and signals[self.second_operand] != None
     
     def operate(self, signals):
+        operand_value = signals[self.operand] if not self.operand.isnumeric() else int(self.operand)
+        if self.second_operand:
+            second_operand_value = signals[self.second_operand] if not self.second_operand.isnumeric() else int(self.second_operand)
         if not self.operator:
-            signals[self.target] = signals[self.operand]
+            signals[self.target] = operand_value
         else:
             if self.operator == 'NOT':
-                pass
+                signals[self.target] = ~ operand_value
             elif self.operator == 'OR':
-                pass
+                signals[self.target] = operand_value | second_operand_value
             elif self.operator == 'AND':
-                pass
+                signals[self.target] = operand_value & second_operand_value
             elif self.operator == 'LSHIFT':
-                pass
+                signals[self.target] = operand_value << second_operand_value
             elif self.operator == 'RSHIFT':
-                pass
+                signals[self.target] = operand_value >> second_operand_value
             
 
 def run_circuit(circuit):
@@ -92,28 +99,36 @@ def run_circuit(circuit):
         operation = operation.split(' ')
         
         if len(operation) == 1:
-            if operation[0].isnumeric():   
-                signals[target] = int(operation[0])
-            else:
-                operations.append(Operation(operation[0], target))
-                signals[target] = None
+            operations.append(Operation(operation[0], target))
         elif len(operation) == 2:   
             operations.append(Operation(operation[1], target, operator=operation[0]))
-            signals[target] = None
         else:
             if operation[0].isnumeric():
                 operations.append(Operation(operation[2], target, second_operand=operation[0], operator=operation[1]))
             else:   
                 operations.append(Operation(operation[0], target, second_operand=operation[2], operator=operation[1]))
-            signals[target] = None
-            
+                
+        signals[target] = None
+        
     while operations:
         operation = operations.pop(0)
         if operation.operable(signals):
-            pass
+            operation.operate(signals)
         else:
-            print("Can't operate")
             operations.append(operation)
+            
+    return signals['a']
                  
         
-run_circuit(get_circuit("input.txt"))
+print(run_circuit(get_circuit("input.txt")), "is the signal provided to wire a.")
+#Your puzzle answer was 46065
+
+"""
+--- Part Two ---
+Now, take the signal you got on wire a, override wire b to that signal, and reset 
+the other wires (including wire a). What new signal is ultimately provided to wire a?
+"""
+
+#We just change the input
+
+print(run_circuit(get_circuit("input_pt2.txt")), "is the new signal provided to wire a.")
