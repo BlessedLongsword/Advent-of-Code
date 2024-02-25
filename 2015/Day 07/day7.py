@@ -50,15 +50,70 @@ In little Bobby's kit's instructions booklet (provided as your puzzle input), wh
 def get_circuit(file):
     return open(file).read().splitlines()
 
+class Operation:
+    def __init__(self, operand, target, second_operand=None, operator=None) -> None:
+        self.operand = operand
+        self.second_operand = second_operand
+        self.operator = operator
+        self.target = target
+    
+    def __str__(self):
+        return f"{self.operand}, {self.second_operand}, {self.operator}, {self.target}"
+    
+    def operable(self, signals):
+        if not self.second_operand or self.second_operand.isnumeric():
+            return signals[self.operand] != None
+        return  signals[self.operand] != None and signals[self.second_operand] != None
+    
+    def operate(self, signals):
+        if not self.operator:
+            signals[self.target] = signals[self.operand]
+        else:
+            if self.operator == 'NOT':
+                pass
+            elif self.operator == 'OR':
+                pass
+            elif self.operator == 'AND':
+                pass
+            elif self.operator == 'LSHIFT':
+                pass
+            elif self.operator == 'RSHIFT':
+                pass
+            
+
 def run_circuit(circuit):
+    
     signals = {}
     operations = []
+    
     for instruction in circuit:
+        
         operation, target = instruction.split(' -> ')
         operation = operation.split(' ')
-        if len(operation == 1):
-            signals[target] = int(operation[0])
-        elif len(operation == 2):
+        
+        if len(operation) == 1:
+            if operation[0].isnumeric():   
+                signals[target] = int(operation[0])
+            else:
+                operations.append(Operation(operation[0], target))
+                signals[target] = None
+        elif len(operation) == 2:   
+            operations.append(Operation(operation[1], target, operator=operation[0]))
+            signals[target] = None
+        else:
+            if operation[0].isnumeric():
+                operations.append(Operation(operation[2], target, second_operand=operation[0], operator=operation[1]))
+            else:   
+                operations.append(Operation(operation[0], target, second_operand=operation[2], operator=operation[1]))
+            signals[target] = None
+            
+    while operations:
+        operation = operations.pop(0)
+        if operation.operable(signals):
             pass
+        else:
+            print("Can't operate")
+            operations.append(operation)
+                 
         
 run_circuit(get_circuit("input.txt"))
