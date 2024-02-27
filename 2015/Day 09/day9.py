@@ -33,9 +33,13 @@ def get_cities(file):
         pair, distance = trip.split(' = ')
         origin, dest = pair.split(' to ')
         if origin in cities:
-            cities[origin][dest] = distance
+            cities[origin][dest] = int(distance)
         else:
-            cities[origin] = {dest: distance}      
+            cities[origin] = {dest: int(distance)}
+        if dest in cities:
+            cities[dest][origin] =  int(distance)
+        else:
+            cities[dest] = {origin: int(distance)} 
     return cities
 
 print(get_cities("input.txt"))
