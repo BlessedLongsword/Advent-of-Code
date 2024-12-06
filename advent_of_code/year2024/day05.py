@@ -2,19 +2,22 @@
 
 # Input
 
+from util.get_input import get_input
+
 ordering_rules = set()
 updates = list()
-with open('./inputs/day05.txt') as f:
-    first_section = True
-    for line in f.read().splitlines():
-        if first_section:
-            if not line:
-                first_section = False
-                continue
-            ordering_rules.add(tuple(map(int, line.split('|'))))
-        else:
-            updates.append(list(map(int, line.split(','))))
+first_section = True
+for line in get_input(2024, 5).splitlines():
+    if first_section:
+        if not line:
+            first_section = False
+            continue
+        ordering_rules.add(tuple(map(int, line.split('|'))))
+    else:
+        updates.append(list(map(int, line.split(','))))
 
+
+# Parts 1 & 2
 
 from functools import cmp_to_key
 

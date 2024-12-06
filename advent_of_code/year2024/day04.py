@@ -2,8 +2,10 @@
 
 # Input
 
-def get_word_search(file):
-    return open(file).read().splitlines()
+from util.get_input import get_input
+
+def get_word_search():
+    return get_input(2024, 4).splitlines()
 
 
 # Part 1
@@ -34,7 +36,7 @@ def count_words_in_word_search(word_search, word):
                     acc += int(is_word_in_direction(word_search, word, (i, j), direction))
     return acc
 
-print(f'XMAS appears {count_words_in_word_search(get_word_search('./inputs/day4.txt'), 'XMAS')} times')
+print(f'XMAS appears {count_words_in_word_search(get_word_search(), 'XMAS')} times')
 
 
 # Part 2
@@ -52,4 +54,4 @@ def count_crosses_in_word_search(word_search, word):
                         is_word_in_direction(word_search, word, (i - 1, j + 1), (1, -1))))
     return acc
 
-print(f'X-MAS appears {count_crosses_in_word_search(get_word_search('./inputs/day4.txt'), 'MAS')} times')
+print(f'X-MAS appears {count_crosses_in_word_search(get_word_search(), 'MAS')} times')
