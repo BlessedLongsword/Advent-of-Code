@@ -61,21 +61,6 @@ part1(get_area_map())
 
 # Part 2
 
-def is_part_of_cycle(area_map, position, steps):
-    first_cycle = list()
-    second_cycle = list()
-    in_first_cycle = True
-    for step in steps[::-1]:
-        if in_first_cycle:
-            first_cycle.append(step)
-            if step == position:
-                in_first_cycle = False
-        else:
-            second_cycle.append(step)
-            if step == position:
-                return first_cycle == second_cycle
-    return False 
-
 def count_possible_obstructions(area_map, guard_position, directions, guard_direction):
     original_visited = set()
     initial_guard_position, initial_guard_direction = guard_position, guard_direction
@@ -91,25 +76,18 @@ def count_possible_obstructions(area_map, guard_position, directions, guard_dire
     for i, position in enumerate(original_visited):
         pi, pj = position
         visited = set()
-        steps = list()
         guard_position, guard_direction = initial_guard_position, initial_guard_direction
-        prev_guard_position = None
-        visited.add(guard_position)
-        steps.append(guard_position)
+        prev_guard_position, prev_guard_direction = None, None
+        visited.add(((guard_position, guard_direction), (prev_guard_position, prev_guard_direction)))
         while True:
             prev_guard_position = guard_position
             guard_position, guard_direction = perform_step(area_map, guard_position, directions, guard_direction, {(pi, pj)})
             if not guard_is_within_area(area_map, guard_position):
-                print(f'Position {position} was of iteration {i} and did not work')
                 break
-            if guard_position in visited and guard_position != prev_guard_position:
-                if is_part_of_cycle(area_map, guard_position, steps):
-                    acc += 1
-                    print(f'Position {position} was of iteration {i} and work')
-                    break
-            visited.add(guard_position)
-            if prev_guard_position != guard_position:
-                steps.append(guard_position)
+            if ((guard_position, guard_direction), (prev_guard_position, prev_guard_direction)) in visited:
+                acc += 1
+                break
+            visited.add(((guard_position, guard_direction), (prev_guard_position, prev_guard_direction)))
     return acc
 
 def part2(area_map):
@@ -118,4 +96,3 @@ def part2(area_map):
     print(f'There are {count_possible_obstructions(area_map, initial_guard_position, directions, initial_guard_direction)} possible positions for obstruction.')
 
 part2(get_area_map())
-#part2(open('./year2024/inputs/day06_example.txt').read().splitlines())
