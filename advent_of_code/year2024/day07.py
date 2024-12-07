@@ -27,7 +27,6 @@ class Equation:
 def get_calibration_equations(valid_operators):
     equations = list()
     for line in get_input(2024, 7).splitlines():
-    #for line in open('./year2024/inputs/day07_example.txt').read().splitlines():
         result, operands = line.split(': ')
         result = int(result)
         operands = list(map(int, operands.split(' ')))
