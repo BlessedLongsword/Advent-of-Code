@@ -10,18 +10,24 @@ def get_reports():
 
 # Part 1
 
-def is_report_safe(report, decreasing = None):
-    current_level = report[0]
-    for level in report[1:]:
-        if decreasing is None:
-            decreasing = level < current_level
-        else:
-            if (decreasing and level > current_level) or (not decreasing and level < current_level):
-                return False
-        difference = abs(level - current_level)
-        if difference <= 0 or difference >= 4:
+def levels_follow_conditions(level, next_level, variation):
+    difference = next_level - level
+    if not 0 < abs(difference) < 4:
+        return False, variation
+    if variation < 0:
+        return difference < 0, variation
+    elif variation > 0:
+        return difference > 0, variation
+    else:
+        return True, -1 if difference < 0 else 1
+    return True, variation
+        
+def is_report_safe(report, variation = 0):
+    for i in range(len(report) - 1):
+        level, next_level = report[i], report[i + 1]
+        _levels_follow_conditions, variation = levels_follow_conditions(level, next_level, variation)
+        if not _levels_follow_conditions:
             return False
-        current_level = level
     return True
 
 print(f'The number of safe reports is {sum(is_report_safe(report) for report in get_reports())}')
@@ -29,12 +35,17 @@ print(f'The number of safe reports is {sum(is_report_safe(report) for report in 
 
 # Part 2
 
-def is_report_safe_with_dampening(report):
-    if not is_report_safe(report):
-        for i in range(len(report)):
-            if is_report_safe(report[:i] + report[i+1:]):
+def is_report_safe_with_dampening(report, variation = 0):
+    for i in range(len(report) - 1):
+        level, next_level = report[i], report[i + 1]
+        _levels_follow_conditions, variation = levels_follow_conditions(level, next_level, variation)
+        if not _levels_follow_conditions:
+            if i == len(report) - 1:
                 return True
-        return False
+            elif i == 1:
+                return is_report_safe(report[0:1] + report[2:]) or is_report_safe(report[1:])
+            else:
+                return is_report_safe(report[0:i] + report[i + 1:]) or is_report_safe(report[0:i + 1] + report[i + 2:])
     return True
 
 print(f'The number of safe reports is {sum(is_report_safe_with_dampening(report) for report in get_reports())}')
